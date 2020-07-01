@@ -103,13 +103,22 @@ func postReadingDB(w http.ResponseWriter, req *http.Request) {
 		log.Print(err)
 	}
 }
+func deleteReadingDB(w http.ResponseWriter, req *http.Request) {
+	ID := req.URL.Query().Get("ID")
+	db := dbConn()
+	_, err := db.Query("DELETE FROM READINGS WHERE id=?", ID)
+	if err != nil {
+		log.Print(err)
+	}
+
+}
 
 func main() {
 
 	http.HandleFunc("/getReadingsDB", getReadingsDB)
 	http.HandleFunc("/getReadingDB", getReadingDB)
 	http.HandleFunc("/postReadingDB", postReadingDB)
-
+	http.HandleFunc("/deleteReadingDB", deleteReadingDB)
 	http.ListenAndServe(":8090", nil)
 	// koristit /configuration/:id/ a ne /configuration?id=1
 }
