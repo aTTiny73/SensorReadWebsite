@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -110,15 +111,34 @@ func deleteReadingDB(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
-
 }
 
+func updateReadingDB(w http.ResponseWriter, req *http.Request) {
+	ID := req.URL.Query().Get("ID")
+	body, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	var sensVal SensorValues
+	err = json.Unmarshal(body, &sensVal)
+	if err != nil {
+		println(err)
+	}
+	if ID != strconv.Itoa(sensVal.ID) {
+		fmt.Println("Id missmatch")
+	} else {
+		db := dbConn()
+		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), ID)
+		if err != nil {
+			log.Print(err)
+		}
+	}
+}
 func main() {
 
 	http.HandleFunc("/getReadingsDB", getReadingsDB)
 	http.HandleFunc("/getReadingDB", getReadingDB)
 	http.HandleFunc("/postReadingDB", postReadingDB)
 	http.HandleFunc("/deleteReadingDB", deleteReadingDB)
+	http.HandleFunc("/updateReadingDB", updateReadingDB)
 	http.ListenAndServe(":8090", nil)
 	// koristit /configuration/:id/ a ne /configuration?id=1
 }
