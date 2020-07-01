@@ -141,8 +141,8 @@ func main() {
 	router.HandleFunc("/getReadingsDB", getReadingsDB).Methods("GET")
 	router.HandleFunc("/getReadingDB/{id}", getReadingDB).Methods("GET")
 	router.HandleFunc("/postReadingDB", postReadingDB).Methods("POST")
-	router.HandleFunc("/deleteReadingDB/{id}", deleteReadingDB).Methods("GET")
-	router.HandleFunc("/updateReadingDB/{id}", updateReadingDB).Methods("POST")
+	router.HandleFunc("/deleteReadingDB/{id}", deleteReadingDB).Methods("DELETE")
+	router.HandleFunc("/updateReadingDB/{id}", updateReadingDB).Methods("PUT")
 	http.ListenAndServe(":8090", router)
 
 }
