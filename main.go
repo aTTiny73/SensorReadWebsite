@@ -11,6 +11,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 // SensorValues structure that contains all the individual measured values
@@ -62,10 +63,11 @@ func getReadingsDB(w http.ResponseWriter, req *http.Request) {
 }
 
 func getReadingDB(w http.ResponseWriter, req *http.Request) {
-	ID := req.URL.Query().Get("ID")
+	//ID := req.URL.Query().Get("ID")
+	params := mux.Vars(req)
 	var sensVal SensorValues
 	db := dbConn()
-	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2 FROM READINGS WHERE id = ? ", ID)
+	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2 FROM READINGS WHERE id = ? ", params["id"])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -105,16 +107,16 @@ func postReadingDB(w http.ResponseWriter, req *http.Request) {
 	}
 }
 func deleteReadingDB(w http.ResponseWriter, req *http.Request) {
-	ID := req.URL.Query().Get("ID")
+	params := mux.Vars(req)
 	db := dbConn()
-	_, err := db.Query("DELETE FROM READINGS WHERE id=?", ID)
+	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
 		log.Print(err)
 	}
 }
 
 func updateReadingDB(w http.ResponseWriter, req *http.Request) {
-	ID := req.URL.Query().Get("ID")
+	params := mux.Vars(req)
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
@@ -122,23 +124,25 @@ func updateReadingDB(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		println(err)
 	}
-	if ID != strconv.Itoa(sensVal.ID) {
+	if params["id"] != strconv.Itoa(sensVal.ID) {
 		fmt.Println("Id missmatch")
 	} else {
 		db := dbConn()
-		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), ID)
+		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
 		if err != nil {
 			log.Print(err)
 		}
 	}
 }
+
 func main() {
 
-	http.HandleFunc("/getReadingsDB", getReadingsDB)
-	http.HandleFunc("/getReadingDB", getReadingDB)
-	http.HandleFunc("/postReadingDB", postReadingDB)
-	http.HandleFunc("/deleteReadingDB", deleteReadingDB)
-	http.HandleFunc("/updateReadingDB", updateReadingDB)
-	http.ListenAndServe(":8090", nil)
-	// koristit /configuration/:id/ a ne /configuration?id=1
+	router := mux.NewRouter()
+	router.HandleFunc("/getReadingsDB", getReadingsDB).Methods("GET")
+	router.HandleFunc("/getReadingDB/{id}", getReadingDB).Methods("GET")
+	router.HandleFunc("/postReadingDB", postReadingDB).Methods("POST")
+	router.HandleFunc("/deleteReadingDB/{id}", deleteReadingDB).Methods("GET")
+	router.HandleFunc("/updateReadingDB/{id}", updateReadingDB).Methods("POST")
+	http.ListenAndServe(":8090", router)
+
 }
