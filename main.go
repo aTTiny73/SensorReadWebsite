@@ -98,17 +98,23 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 	var sensVal SensorValues
 	err = json.Unmarshal(body, &sensVal)
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 	sensVal.TIme = getTime()
 	stmt, err := db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 
 	_, err = stmt.Exec(sensVal.ID, sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.TIme)
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 }
 func deleteReading(w http.ResponseWriter, req *http.Request) {
@@ -116,6 +122,8 @@ func deleteReading(w http.ResponseWriter, req *http.Request) {
 	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
 		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -126,7 +134,9 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 	var sensVal SensorValues
 	err = json.Unmarshal(body, &sensVal)
 	if err != nil {
-		println(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 	if params["id"] != strconv.Itoa(sensVal.ID) {
 		fmt.Println("Id missmatch")
@@ -135,6 +145,8 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
 		if err != nil {
 			log.Print(err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
 		}
 	}
 }
