@@ -20,6 +20,7 @@ type SensorValues struct {
 	Temperature int     `json:"temperature"`
 	Humidity    float32 `json:"humidity"`
 	Co2         int     `json:"co2"`
+	TIme        string  `json:"time"`
 }
 
 func dbConn() (db *sql.DB) {
@@ -29,93 +30,96 @@ func dbConn() (db *sql.DB) {
 	dbName := "SENSORDATA"
 	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@/"+dbName)
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err)
 	}
 	return db
 }
+
+var db = dbConn()
+
 func getTime() string {
 	time := fmt.Sprint(time.Now().Format("15:04:05"))
 	return time
 }
 
-func getReadingsDB(w http.ResponseWriter, req *http.Request) {
+func getReadings(w http.ResponseWriter, req *http.Request) {
 
 	var sensVal SensorValues
-	db := dbConn()
-	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2 FROM READINGS ")
-	if err != nil {
-		log.Fatal(err)
-	}
+	var readingSlice []SensorValues
+
+	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS ")
 	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2)
-		if err != nil {
-			log.Fatal(err)
-		}
-		bytes, _ := json.MarshalIndent(sensVal, "", " ")
-		fmt.Fprintf(w, string(bytes))
-	}
-	err = rows.Err()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 
+	for rows.Next() {
+		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.TIme)
+		if err != nil {
+			log.Print(err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+		readingSlice = append(readingSlice, sensVal)
+	}
+	bytes, _ := json.MarshalIndent(readingSlice, "", " ")
+	fmt.Fprintf(w, string(bytes))
 }
 
-func getReadingDB(w http.ResponseWriter, req *http.Request) {
+func getReading(w http.ResponseWriter, req *http.Request) {
 	//ID := req.URL.Query().Get("ID")
 	params := mux.Vars(req)
 	var sensVal SensorValues
-	db := dbConn()
-	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2 FROM READINGS WHERE id = ? ", params["id"])
-	if err != nil {
-		log.Fatal(err)
-	}
+	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS WHERE id = ? ", params["id"])
 	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2)
-		if err != nil {
-			log.Fatal(err)
-		}
-		bytes, _ := json.MarshalIndent(sensVal, "", " ")
-		fmt.Fprintf(w, string(bytes))
-	}
-	err = rows.Err()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 
+	for rows.Next() {
+		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.TIme)
+		if err != nil {
+			log.Print(err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+	}
+	bytes, _ := json.MarshalIndent(sensVal, "", " ")
+	fmt.Fprintf(w, string(bytes))
 }
 
-func postReadingDB(w http.ResponseWriter, req *http.Request) {
+func postReading(w http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
 	err = json.Unmarshal(body, &sensVal)
 	if err != nil {
-		println(err)
+		fmt.Println(err)
 	}
-	db := dbConn()
+	sensVal.TIme = getTime()
 	stmt, err := db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
-		log.Print(err)
+		fmt.Println(err)
 	}
 
-	_, err = stmt.Exec(sensVal.ID, sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime())
+	_, err = stmt.Exec(sensVal.ID, sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.TIme)
 	if err != nil {
-		log.Print(err)
+		fmt.Println(err)
 	}
 }
-func deleteReadingDB(w http.ResponseWriter, req *http.Request) {
+func deleteReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
-	db := dbConn()
 	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func updateReadingDB(w http.ResponseWriter, req *http.Request) {
+func updateReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -127,7 +131,7 @@ func updateReadingDB(w http.ResponseWriter, req *http.Request) {
 	if params["id"] != strconv.Itoa(sensVal.ID) {
 		fmt.Println("Id missmatch")
 	} else {
-		db := dbConn()
+
 		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
 		if err != nil {
 			log.Print(err)
@@ -135,14 +139,23 @@ func updateReadingDB(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+/*// Middleware functions
+func Middleware(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		fmt.Prinln("Middleware func")
+		handler.ServeHTTP(w, req)
+	}
+
+}*/
+
 func main() {
 
 	router := mux.NewRouter()
-	router.HandleFunc("/getReadingsDB", getReadingsDB).Methods("GET")
-	router.HandleFunc("/getReadingDB/{id}", getReadingDB).Methods("GET")
-	router.HandleFunc("/postReadingDB", postReadingDB).Methods("POST")
-	router.HandleFunc("/deleteReadingDB/{id}", deleteReadingDB).Methods("DELETE")
-	router.HandleFunc("/updateReadingDB/{id}", updateReadingDB).Methods("PUT")
+	router.HandleFunc("/getReadings", getReadings).Methods("GET")
+	router.HandleFunc("/getReading/{id}", getReading).Methods("GET")
+	router.HandleFunc("/postReading", postReading).Methods("POST")
+	router.HandleFunc("/deleteReading/{id}", deleteReading).Methods("DELETE")
+	router.HandleFunc("/updateReading/{id}", updateReading).Methods("PUT")
 	http.ListenAndServe(":8090", router)
 
 }
