@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="UTF-8"> 
+<html>
+<body style="background-color:#333333;">
+
+<div id="get">
+<h2>Sensor Data</h2>
+<button type="button" onclick="loadAllData()">GET all data</button>
+</div>
+<br>
+
+
+  <input id = "input1" placeholder="1,2,3,4...">
+ 
+
+  <div id="get1">
+  <button type="button" onclick="loadData()">GET single reading</button>
+</div>
+
+<table id ="dataTable" border="2" align="center" >
+  <tr>
+    <th>id</th>
+    <th>temperature</th>
+    <th>humidity</th>
+    <th>c02</th>
+    <th>time</th>
+  </tr>
+</table>
+
+<script src="main.js"></script>
+
+</body>
+</html>

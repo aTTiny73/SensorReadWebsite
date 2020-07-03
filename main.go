@@ -43,7 +43,7 @@ func getTime() string {
 }
 
 func getReadings(w http.ResponseWriter, req *http.Request) {
-
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var sensVal SensorValues
 	var readingSlice []SensorValues
 
@@ -70,8 +70,10 @@ func getReadings(w http.ResponseWriter, req *http.Request) {
 
 func getReading(w http.ResponseWriter, req *http.Request) {
 	//ID := req.URL.Query().Get("ID")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	var sensVal SensorValues
+	var readingSlice []SensorValues
 	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS WHERE id = ? ", params["id"])
 	defer rows.Close()
 	if err != nil {
@@ -87,12 +89,14 @@ func getReading(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
+		readingSlice = append(readingSlice, sensVal)
 	}
-	bytes, _ := json.MarshalIndent(sensVal, "", " ")
+	bytes, _ := json.MarshalIndent(readingSlice, "", " ")
 	fmt.Fprintf(w, string(bytes))
 }
 
 func postReading(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
@@ -118,6 +122,7 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 	}
 }
 func deleteReading(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
@@ -128,6 +133,7 @@ func deleteReading(w http.ResponseWriter, req *http.Request) {
 }
 
 func updateReading(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
