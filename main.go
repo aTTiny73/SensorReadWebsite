@@ -43,7 +43,6 @@ func getTime() string {
 }
 
 func getReadings(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var sensVal SensorValues
 	var readingSlice []SensorValues
 
@@ -69,8 +68,6 @@ func getReadings(w http.ResponseWriter, req *http.Request) {
 }
 
 func getReading(w http.ResponseWriter, req *http.Request) {
-	//ID := req.URL.Query().Get("ID")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	var sensVal SensorValues
 	var readingSlice []SensorValues
@@ -96,7 +93,6 @@ func getReading(w http.ResponseWriter, req *http.Request) {
 }
 
 func postReading(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
@@ -122,7 +118,6 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 	}
 }
 func deleteReading(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
@@ -133,7 +128,6 @@ func deleteReading(w http.ResponseWriter, req *http.Request) {
 }
 
 func updateReading(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(req)
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -157,23 +151,26 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-/*// Middleware functions
-func Middleware(handler http.HandlerFunc) http.HandlerFunc {
+// AccessControl middleware function inserts access control parameters
+func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		fmt.Prinln("Middleware func")
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")
 		handler.ServeHTTP(w, req)
 	}
 
-}*/
+}
 
 func main() {
 
 	router := mux.NewRouter()
-	router.HandleFunc("/getReadings", getReadings).Methods("GET")
-	router.HandleFunc("/getReading/{id}", getReading).Methods("GET")
-	router.HandleFunc("/postReading", postReading).Methods("POST")
-	router.HandleFunc("/deleteReading/{id}", deleteReading).Methods("DELETE")
-	router.HandleFunc("/updateReading/{id}", updateReading).Methods("PUT")
+	router.HandleFunc("/getReadings", AccessControl(getReadings)).Methods("GET")
+	router.HandleFunc("/getReading/{id}", AccessControl(getReading)).Methods("GET")
+	router.HandleFunc("/postReading", AccessControl(postReading)).Methods("POST")
+	router.HandleFunc("/deleteReading/{id}", AccessControl(deleteReading)).Methods("DELETE")
+	router.HandleFunc("/updateReading/{id}", AccessControl(updateReading)).Methods("PUT")
 	http.ListenAndServe(":8090", router)
 
 }
