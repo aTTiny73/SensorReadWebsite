@@ -17,6 +17,13 @@ table, th, td {
 
   box-sizing: border-box;
 }
+#input2{
+    width: 30px;
+    text-align: center;
+    
+
+  box-sizing: border-box;
+}
 #idInput{
     width: 30px;
     text-align: center;

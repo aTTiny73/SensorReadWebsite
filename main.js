@@ -96,6 +96,20 @@ function updateData(){
         }
         var str = JSON.stringify(data)
     console.log(str)
-    xhttp.open("POST", "http://localhost:8090/updateReading/"+id, true);
+    xhttp.open("PUT", "http://localhost:8090/updateReading/"+id, true);
     xhttp.send(str);
 }
+function deleteData() {
+    var id = document.getElementById("input2").value;
+   
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       
+      }
+    };
+    console.log(id)
+    xhttp.open("DELETE", "http://localhost:8090/deleteReading/"+id, true);
+    xhttp.send();
+  }
+
