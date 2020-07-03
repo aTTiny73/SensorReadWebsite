@@ -85,7 +85,7 @@ function updateData(){
     xhttp.onreadystatechange = function() {
         
     };
-    xhttp.open("PUT", "http://localhost:8090/updateReading/"+id, true);
+    
     //xhttp.setRequestHeader("Content-type", "application/json");
     let data = 
         {
@@ -96,5 +96,6 @@ function updateData(){
         }
         var str = JSON.stringify(data)
     console.log(str)
+    xhttp.open("POST", "http://localhost:8090/updateReading/"+id, true);
     xhttp.send(str);
 }
