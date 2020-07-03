@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,11 +15,11 @@ import (
 
 // SensorValues structure that contains all the individual measured values
 type SensorValues struct {
-	ID          int     `json:"id"`
-	Temperature int     `json:"temperature"`
-	Humidity    float32 `json:"humidity"`
-	Co2         int     `json:"co2"`
-	TIme        string  `json:"time"`
+	ID          string `json:"id"`
+	Temperature string `json:"temperature"`
+	Humidity    string `json:"humidity"`
+	Co2         string `json:"co2"`
+	TIme        string `json:"time"`
 }
 
 func dbConn() (db *sql.DB) {
@@ -138,7 +137,7 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	if params["id"] != strconv.Itoa(sensVal.ID) {
+	if params["id"] != sensVal.ID {
 		fmt.Println("Id missmatch")
 	} else {
 
@@ -155,6 +154,7 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "3.5") //firefox
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")

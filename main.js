@@ -13,7 +13,7 @@ function loadAllData() {
   }
   
   function loadData() {
-    var str = document.getElementById("input1").value;
+    var id = document.getElementById("input1").value;
     var table = document.getElementById("dataTable");
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -23,10 +23,10 @@ function loadAllData() {
        loadTable(data);
       }
     };
-    xhttp.open("GET", "http://localhost:8090/getReading/"+str, true);
+    xhttp.open("GET", "http://localhost:8090/getReading/"+id, true);
     xhttp.send();
   }
-  
+
   function loadTable(data){
     var table = document.getElementById("dataTable");
     for(var i = table.rows.length - 1; i > 0; i--)
@@ -49,4 +49,52 @@ function loadAllData() {
            cell5.innerHTML = data[i].time; 
          }
     
+}
+
+function postData(){
+    var id = document.getElementById("idInput").value;
+    var temp = document.getElementById("tempInput").value;
+    var hum = document.getElementById("humInput").value;
+    var co2 = document.getElementById("co2Input").value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        
+    };
+    xhttp.open("POST", "http://localhost:8090/postReading", true);
+    //xhttp.setRequestHeader("Content-type", "application/json");
+    let data = 
+        {
+        id:id,
+        temperature:temp,
+        humidity:hum,
+        c02:co2
+        }
+    var str = JSON.stringify(data)
+    console.log(str)
+    xhttp.send(str);
+}
+
+function updateData(){
+    var id = document.getElementById("idInput").value;
+    var temp = document.getElementById("tempInput").value;
+    var hum = document.getElementById("humInput").value;
+    var co2 = document.getElementById("co2Input").value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        
+    };
+    xhttp.open("PUT", "http://localhost:8090/updateReading/"+id, true);
+    //xhttp.setRequestHeader("Content-type", "application/json");
+    let data = 
+        {
+        id:id,
+        temperature:temp,
+        humidity:hum,
+        c02:co2
+        }
+        var str = JSON.stringify(data)
+    console.log(str)
+    xhttp.send(str);
 }

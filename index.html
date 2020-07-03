@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<meta charset="UTF-8"> 
+<head>
+  <meta charset="UTF-8">
+  <title>Books</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  
 <html>
 <body style="background-color:#cccdcf;">
 
@@ -10,11 +15,24 @@
 <br>
 
 
-  <input id = "input1" placeholder="1,2,3,4...">
- 
+  <input id = "input1" placeholder="1">
+  <br>
 
   <div id="get1">
   <button type="button" onclick="loadData()">GET single reading</button>
+</div>
+<br>
+<input id = "idInput" placeholder="1">
+<input id = "tempInput" placeholder="1">
+<input id = "humInput" placeholder="1">
+<input id = "co2Input" placeholder="1">
+
+<div id="post">
+  <button type="button" onclick="postData()">POST data</button>
+</div>
+
+<div id="update">
+  <button type="button" onclick="updateData()">Update data</button>
 </div>
 
 <table id ="dataTable" border="3" align="center" >
