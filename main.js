@@ -89,10 +89,10 @@ function updateData(){
     //xhttp.setRequestHeader("Content-type", "application/json");
     let data = 
         {
-        id:id,
-        temperature:temp,
-        humidity:hum,
-        c02:co2
+        id: id,
+        temperature: temp,
+        humidity: hum,
+        co2: co2
         }
         var str = JSON.stringify(data)
     console.log(str)

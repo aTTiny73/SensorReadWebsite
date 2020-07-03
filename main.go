@@ -156,8 +156,12 @@ func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 		//w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "3.5") //firefox
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")
+		if req.Method == "OPTIONS" {
+			return
+		}
 		handler.ServeHTTP(w, req)
 	}
 
@@ -166,11 +170,11 @@ func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 func main() {
 
 	router := mux.NewRouter()
-	router.HandleFunc("/getReadings", AccessControl(getReadings)).Methods("GET")
-	router.HandleFunc("/getReading/{id}", AccessControl(getReading)).Methods("GET")
-	router.HandleFunc("/postReading", AccessControl(postReading)).Methods("POST")
-	router.HandleFunc("/deleteReading/{id}", AccessControl(deleteReading)).Methods("DELETE")
-	router.HandleFunc("/updateReading/{id}", AccessControl(updateReading)).Methods("PUT")
+	router.HandleFunc("/getReadings", AccessControl(getReadings))
+	router.HandleFunc("/getReading/{id}", AccessControl(getReading))
+	router.HandleFunc("/postReading", AccessControl(postReading))
+	router.HandleFunc("/deleteReading/{id}", AccessControl(deleteReading))
+	router.HandleFunc("/updateReading/{id}", AccessControl(updateReading))
 	http.ListenAndServe(":8090", router)
 
 }
