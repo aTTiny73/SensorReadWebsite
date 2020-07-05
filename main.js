@@ -62,7 +62,7 @@ function postData(){
         
     };
     xhttp.open("POST", "http://localhost:8090/postReading", true);
-    //xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.setRequestHeader("Content-type", "application/json");
     let data = 
         {
         id:id,
@@ -86,7 +86,7 @@ function updateData(){
         
     };
     
-    //xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.setRequestHeader("Content-type", "application/json");
     let data = 
         {
         id: id,

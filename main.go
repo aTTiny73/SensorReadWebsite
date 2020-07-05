@@ -68,6 +68,11 @@ func getReadings(w http.ResponseWriter, req *http.Request) {
 
 func getReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
+	if params["id"] == "" {
+		log.Println("No ID")
+		http.Error(w, "No ID", http.StatusNoContent)
+		return
+	}
 	var sensVal SensorValues
 	var readingSlice []SensorValues
 	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS WHERE id = ? ", params["id"])
@@ -101,6 +106,11 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+	if sensVal.ID == "" {
+		log.Println("No ID")
+		http.Error(w, "No ID", http.StatusNoContent)
+		return
+	}
 	sensVal.TIme = getTime()
 	stmt, err := db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
@@ -118,6 +128,11 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 }
 func deleteReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
+	if params["id"] == "" {
+		log.Println("No ID")
+		http.Error(w, "No ID", http.StatusNoContent)
+		return
+	}
 	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
 		log.Print(err)
@@ -128,6 +143,11 @@ func deleteReading(w http.ResponseWriter, req *http.Request) {
 
 func updateReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
+	if params["id"] == "" {
+		log.Println("No ID")
+		http.Error(w, "No ID", http.StatusNoContent)
+		return
+	}
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
@@ -137,23 +157,19 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	if params["id"] != sensVal.ID {
-		fmt.Println("Id missmatch")
-	} else {
-
-		_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
-		if err != nil {
-			log.Print(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
+	_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
+	if err != nil {
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
+
 }
 
 // AccessControl middleware function inserts access control parameters
 func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		//w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "3.5") //firefox
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
