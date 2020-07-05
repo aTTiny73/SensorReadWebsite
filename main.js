@@ -68,7 +68,7 @@ function postData(){
         id:id,
         temperature:temp,
         humidity:hum,
-        c02:co2
+        co2:co2
         }
     var str = JSON.stringify(data)
     console.log(str)
@@ -100,7 +100,7 @@ function updateData(){
     xhttp.send(str);
 }
 function deleteData() {
-    var id = document.getElementById("input2").value;
+    var id = document.getElementById("input1").value;
    
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {

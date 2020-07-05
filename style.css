@@ -1,54 +1,111 @@
 #dataTable{
-    width:50%;
+    width: 40%;
     text-align: center;
+    border: 3px solid black;
+    border-collapse: collapse;
+    
+    
+    
+}
+#dTtr{
+  border: 3px solid black;
+}
+#singleGetDelete{
+  padding-right: 60px;
+  text-align: center;
+  width: 20%;
+  
+  
+}
+#PostPut{
+  padding-left: 60px;
+  text-align: center;
+  width: 20%;
+  
+  
+}
+#singleGetDelete{
+    
+    text-align: left;
+}
+#PostPut{
+    
+    text-align: left;
 }
 
-table, th, td {
-    color:black;
+table {
+  table-layout: auto;
    margin-top: 10px;
-   border: 1px solid black;
     border-color: black;
+    
+    
 }   
 
 #input1{
-    width: 30px;
+
+    width: 140px;
+    
     text-align: center;
+    
     
 
   box-sizing: border-box;
 }
-#input2{
-    width: 30px;
-    text-align: center;
-    
 
-  box-sizing: border-box;
-}
 #idInput{
-    width: 30px;
+    width: 60px;
+    
     text-align: center;
     
 
   box-sizing: border-box;
 }
 #tempInput{
-    width: 30px;
+    width: 60px;
     text-align: center;
     
 
   box-sizing: border-box;
 }
 #humInput{
-    width: 30px;
+    width: 60px;
     text-align: center;
     
 
   box-sizing: border-box;
 }
 #co2Input{
-    width: 30px;
+    width: 60px;
     text-align: center;
     
 
+  box-sizing: border-box;
+}
+#get{
+  width: 267px;
+  
+  box-sizing: border-box;
+  
+
+box-sizing: border-box;
+}
+#get1{
+  width: 267px;
+  
+  box-sizing: border-box;
+}
+#delete{
+  width: 267px;
+  
+  box-sizing: border-box;
+}
+#post{
+  width: 275px;
+  
+  box-sizing: border-box;
+}
+#update{
+    width: 275px;
+  
   box-sizing: border-box;
 }
