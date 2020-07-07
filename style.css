@@ -11,6 +11,7 @@
     border-collapse: collapse;
 }
 #dTtr{
+  
   border: 3px solid black;
 }
 #singleGetDelete{
@@ -25,11 +26,11 @@
 }
 #singleGetDelete{
     
-    text-align: left;
+  text-align: left;
 }
 #PostPut{
     
-    text-align: left;
+  text-align: left;
 }
 table {
   table-layout: auto;
