@@ -1,6 +1,8 @@
 
 #title{
-  background-color: whitesmoke;
+  background-color: #d3d8e6;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
 }
 #dataTable{
     width: 40%;
@@ -38,8 +40,9 @@ table {
 }   
 #input1{
 
-    width: 140px;
-    
+    width: 90px;
+    height: 40px;
+  font-size: 15px;
     text-align: center;
 
   box-sizing: border-box;
@@ -47,56 +50,65 @@ table {
 
 #idInput{
     width: 60px;
-    
+    height: 40px;
+  font-size: 15px;
     text-align: center;
     
   box-sizing: border-box;
 }
 #tempInput{
     width: 60px;
-
+    height: 40px;
+    font-size: 15px;
     text-align: center;
     
   box-sizing: border-box;
 }
 #humInput{
     width: 60px;
-
+    height: 40px;
+    font-size: 15px;
     text-align: center;
     
   box-sizing: border-box;
 }
 #co2Input{
     width: 60px;
-
+    height: 40px;
+    font-size: 15px;
     text-align: center;
 
   box-sizing: border-box;
 }
 #get{
   width: 267px;
-  
+  height: 50px;
+  font-size: 20px;
   box-sizing: border-box;
   
 box-sizing: border-box;
 }
 #get1{
   width: 267px;
-  
+  height: 40px;
+  font-size: 15px;
   box-sizing: border-box;
 }
 #delete{
   width: 267px;
-  
+  height: 40px;
+  font-size: 15px;
   box-sizing: border-box;
 }
 #post{
-  width: 275px;
-  
+  width: 290px;
+  height: 40px;
+  font-size: 15px;
   box-sizing: border-box;
 }
 #update{
-    width: 275px;
-  
+    width: 290px;
+    height: 40px;
+    font-size: 15px;
   box-sizing: border-box;
 }

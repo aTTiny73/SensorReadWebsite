@@ -192,6 +192,7 @@ func main() {
 	router.HandleFunc("/postReading", AccessControl(postReading))
 	router.HandleFunc("/deleteReading/{id}", AccessControl(deleteReading))
 	router.HandleFunc("/updateReading/{id}", AccessControl(updateReading))
+	log.Println("Server started...")
 	http.ListenAndServe(":8090", router)
 
 }
