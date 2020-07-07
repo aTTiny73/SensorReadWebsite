@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
+
   <title>SensorData</title>
   <link rel="stylesheet" type="text/css" href="style.css">
   </head>
@@ -8,12 +9,11 @@
 <html>
 <body style="background-color:#cccdcf;">
 
-<div>
+<div  id="title">
 <h1  align="center">Sensor Data</h1>
 </div>
+
 <br>
-
-
 
 <table id ="singleGetDelete" style="float: right ;">
   
@@ -21,7 +21,6 @@
   <tr>
     <th align="left">Unique ID </th>
     <td><input id = "input1" placeholder="1"></td>
-
   </tr>
 
   <tr>
@@ -29,6 +28,7 @@
     <button type="button" onclick="loadData()" id="get1">GET reading</button>
     </td> 
   </tr>
+
   <tr>
     <td colspan="2">
     <button type="button" onclick="deleteData()" id="delete">Delete reading</button>
@@ -40,6 +40,7 @@
       <button type="button" onclick="loadAllData()" id="get">GET all data</button>
     </td> 
   </tr>
+
 </table>
 
 <table id ="PostPut" style="float: left;" >
@@ -69,15 +70,16 @@
     </td>
   </tr>
   
-    <tr>
-      <td colspan="2">
-      <button type="button" onclick="updateData()" id="update">Update reading</button>
-      </td>
-    </tr>
+  <tr>
+    <td colspan="2">
+   <button type="button" onclick="updateData()" id="update">Update reading</button>
+   </td>
+ </tr>
 
 </table>
 
 <br>
+
 <table id ="dataTable" align="center" border="1px" >
   <tr>
     <th>ID</th>

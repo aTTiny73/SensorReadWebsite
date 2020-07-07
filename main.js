@@ -9,6 +9,7 @@ function loadAllData() {
       }
     };
     xhttp.open("GET", "http://localhost:8090/getReadings", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
   }
   
@@ -24,6 +25,7 @@ function loadAllData() {
       }
     };
     xhttp.open("GET", "http://localhost:8090/getReading/"+id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
   }
 
@@ -83,10 +85,7 @@ function updateData(){
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-        
     };
-    
-    xhttp.setRequestHeader("Content-type", "application/json");
     let data = 
         {
         id: id,
@@ -97,6 +96,7 @@ function updateData(){
         var str = JSON.stringify(data)
     console.log(str)
     xhttp.open("PUT", "http://localhost:8090/updateReading/"+id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send(str);
 }
 function deleteData() {
@@ -110,6 +110,7 @@ function deleteData() {
     };
     console.log(id)
     xhttp.open("DELETE", "http://localhost:8090/deleteReading/"+id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
   }
 

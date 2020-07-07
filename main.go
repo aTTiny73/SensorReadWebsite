@@ -19,7 +19,7 @@ type SensorValues struct {
 	Temperature string `json:"temperature"`
 	Humidity    string `json:"humidity"`
 	Co2         string `json:"co2"`
-	TIme        string `json:"time"`
+	Time        string `json:"time"`
 }
 
 func dbConn() (db *sql.DB) {
@@ -54,7 +54,7 @@ func getReadings(w http.ResponseWriter, req *http.Request) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.TIme)
+		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.Time)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -84,7 +84,7 @@ func getReading(w http.ResponseWriter, req *http.Request) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.TIme)
+		err := rows.Scan(&sensVal.ID, &sensVal.Temperature, &sensVal.Humidity, &sensVal.Co2, &sensVal.Time)
 		if err != nil {
 			log.Print(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -111,7 +111,7 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "No ID", http.StatusNoContent)
 		return
 	}
-	sensVal.TIme = getTime()
+	sensVal.Time = getTime()
 	stmt, err := db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Print(err)
@@ -119,7 +119,7 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err = stmt.Exec(sensVal.ID, sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.TIme)
+	_, err = stmt.Exec(sensVal.ID, sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.Time)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -157,7 +157,8 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, getTime(), params["id"])
+	sensVal.Time = getTime()
+	_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.Time, params["id"])
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

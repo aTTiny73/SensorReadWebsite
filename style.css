@@ -1,11 +1,12 @@
+
+#title{
+  background-color: whitesmoke;
+}
 #dataTable{
     width: 40%;
     text-align: center;
     border: 3px solid black;
     border-collapse: collapse;
-    
-    
-    
 }
 #dTtr{
   border: 3px solid black;
@@ -14,15 +15,11 @@
   padding-right: 60px;
   text-align: center;
   width: 20%;
-  
-  
 }
 #PostPut{
   padding-left: 60px;
   text-align: center;
   width: 20%;
-  
-  
 }
 #singleGetDelete{
     
@@ -32,22 +29,18 @@
     
     text-align: left;
 }
-
 table {
   table-layout: auto;
-   margin-top: 10px;
-    border-color: black;
-    
-    
-}   
 
+  margin-top: 10px;
+
+  border-color: black;
+}   
 #input1{
 
     width: 140px;
     
     text-align: center;
-    
-    
 
   box-sizing: border-box;
 }
@@ -57,27 +50,26 @@ table {
     
     text-align: center;
     
-
   box-sizing: border-box;
 }
 #tempInput{
     width: 60px;
+
     text-align: center;
     
-
   box-sizing: border-box;
 }
 #humInput{
     width: 60px;
+
     text-align: center;
     
-
   box-sizing: border-box;
 }
 #co2Input{
     width: 60px;
+
     text-align: center;
-    
 
   box-sizing: border-box;
 }
@@ -86,7 +78,6 @@ table {
   
   box-sizing: border-box;
   
-
 box-sizing: border-box;
 }
 #get1{
