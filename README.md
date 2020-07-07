@@ -8,7 +8,7 @@ git clone https://github.com/aTTiny73/SensorReadWebsite.git
 ```
 ## Database setup
 
-To setup database first you need to instal mysql-server.
+To setup database first you need to install mysql-server.
 To get the exact same table as me, inside the mysql shell, type these commands :
 ```
 CREATE DATABASE SENSORDATA;
@@ -26,7 +26,7 @@ CREATE TABLE READINGS
 Now its time to setup user you can do that by running this command in mysql shell:
 
 ```
-CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testuser';
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpassword';
 ```
 Now we need to grant all privileges to user so he can add to the tabel delete etc.
 ```
