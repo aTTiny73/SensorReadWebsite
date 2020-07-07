@@ -1,7 +1,7 @@
 # SensorReadWebsite
 
 Website contains database <--> backend <--> frontend. It represents a website where operetor can enter,update,get,delete sensor measured data.
-![107077573_300673567642198_3677948170768276020_n](https://user-images.githubusercontent.com/62447953/86564483-9aa07d80-bf66-11ea-9050-0cf5c7fceadf.png)
+![Screenshot from 2020-07-07 11-43-56](https://user-images.githubusercontent.com/62447953/86762900-3dc8c400-c047-11ea-87e6-5cb144202154.png)
 ## Cloning
 ```
 git clone https://github.com/aTTiny73/SensorReadWebsite.git
