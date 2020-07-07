@@ -58,7 +58,10 @@ function postData(){
     var temp = document.getElementById("tempInput").value;
     var hum = document.getElementById("humInput").value;
     var co2 = document.getElementById("co2Input").value;
-
+    if(id.length == 0 || temp.length == 0 || hum.length == 0 || co2.length == 0){
+      alert("Please enter all required data.")
+    }
+    else{
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -77,6 +80,7 @@ function postData(){
     var str = JSON.stringify(data)
     console.log(str)
     xhttp.send(str);
+ }
 }
 
 function updateData(){
@@ -84,7 +88,10 @@ function updateData(){
     var temp = document.getElementById("tempInput").value;
     var hum = document.getElementById("humInput").value;
     var co2 = document.getElementById("co2Input").value;
-
+    if(id.length == 0 || temp.length == 0 || hum.length == 0 || co2.length == 0){
+      alert("Please enter all required data.")
+    }
+    else {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -103,6 +110,7 @@ function updateData(){
     xhttp.open("PUT", "http://localhost:8090/updateReading/"+id, true);
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send(str);
+ }
 }
 function deleteData() {
     var id = document.getElementById("input1").value;
