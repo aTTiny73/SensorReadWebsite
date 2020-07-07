@@ -39,45 +39,39 @@ table {
   border-color: black;
 }   
 #input1{
-
-    width: 90px;
-    height: 40px;
+  width: 90px;
+  height: 40px;
   font-size: 15px;
-    text-align: center;
-
+  text-align: center;
   box-sizing: border-box;
 }
 
 #idInput{
-    width: 60px;
-    height: 40px;
+  width: 60px;
+  height: 40px;
   font-size: 15px;
-    text-align: center;
-    
+  text-align: center;
   box-sizing: border-box;
 }
 #tempInput{
-    width: 60px;
-    height: 40px;
-    font-size: 15px;
-    text-align: center;
-    
+  width: 60px;
+  height: 40px;
+  font-size: 15px;
+  text-align: center; 
   box-sizing: border-box;
 }
 #humInput{
-    width: 60px;
-    height: 40px;
-    font-size: 15px;
-    text-align: center;
-    
+  width: 60px;
+  height: 40px;
+  font-size: 15px;
+  text-align: center;
   box-sizing: border-box;
 }
 #co2Input{
-    width: 60px;
-    height: 40px;
-    font-size: 15px;
-    text-align: center;
-
+  width: 60px;
+  height: 40px;
+  font-size: 15px;
+  text-align: center;
   box-sizing: border-box;
 }
 #get{
@@ -85,8 +79,7 @@ table {
   height: 50px;
   font-size: 20px;
   box-sizing: border-box;
-  
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 #get1{
   width: 267px;
