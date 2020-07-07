@@ -61,7 +61,9 @@ function postData(){
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-        
+      if (this.readyState == 4 && this.status == 200) {
+       loadAllData()
+      }
     };
     xhttp.open("POST", "http://localhost:8090/postReading", true);
     xhttp.setRequestHeader("Content-type", "application/json");
@@ -85,6 +87,9 @@ function updateData(){
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       loadAllData()
+      }
     };
     let data = 
         {
@@ -105,7 +110,7 @@ function deleteData() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-       
+       loadAllData()
       }
     };
     console.log(id)
