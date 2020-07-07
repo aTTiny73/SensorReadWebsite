@@ -21,8 +21,11 @@ type SensorValues struct {
 	Co2         string `json:"co2"`
 	Time        string `json:"time"`
 }
+type dbHandler struct {
+	db *sql.DB
+}
 
-func dbConn() (db *sql.DB) {
+func dbConn() (* dbHandler) {
 	dbDriver := "mysql"
 	dbUser := "testuser"
 	dbPass := "testpassword"
@@ -31,21 +34,22 @@ func dbConn() (db *sql.DB) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return db
+	var DataBase dbHandler
+	DataBase.db = db
+	return &DataBase
 }
 
-var db = dbConn()
 
 func getTime() string {
 	time := fmt.Sprint(time.Now().Format("15:04:05"))
 	return time
 }
 
-func getReadings(w http.ResponseWriter, req *http.Request) {
+func (dbHandler *dbHandler)getReadings(w http.ResponseWriter, req *http.Request) {
 	var sensVal SensorValues
 	var readingSlice []SensorValues
 
-	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS ")
+	rows, err := dbHandler.db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS ")
 	defer rows.Close()
 	if err != nil {
 		log.Print(err)
@@ -66,7 +70,7 @@ func getReadings(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, string(bytes))
 }
 
-func getReading(w http.ResponseWriter, req *http.Request) {
+func (dbHandler *dbHandler)getReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	if params["id"] == "" {
 		log.Println("No ID")
@@ -75,7 +79,7 @@ func getReading(w http.ResponseWriter, req *http.Request) {
 	}
 	var sensVal SensorValues
 	var readingSlice []SensorValues
-	rows, err := db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS WHERE id = ? ", params["id"])
+	rows, err := dbHandler.db.Query("SELECT id, Temperature,Humidity,CO2,Time FROM READINGS WHERE id = ? ", params["id"])
 	defer rows.Close()
 	if err != nil {
 		log.Print(err)
@@ -96,7 +100,7 @@ func getReading(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, string(bytes))
 }
 
-func postReading(w http.ResponseWriter, req *http.Request) {
+func (dbHandler *dbHandler)postReading(w http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	var sensVal SensorValues
@@ -112,7 +116,7 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	sensVal.Time = getTime()
-	stmt, err := db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
+	stmt, err := dbHandler.db.Prepare("INSERT INTO READINGS(id, Temperature, Humidity, Co2, Time) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -126,14 +130,14 @@ func postReading(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
-func deleteReading(w http.ResponseWriter, req *http.Request) {
+func(dbHandler *dbHandler) deleteReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	if params["id"] == "" {
 		log.Println("No ID")
 		http.Error(w, "No ID", http.StatusNoContent)
 		return
 	}
-	_, err := db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
+	_, err := dbHandler.db.Query("DELETE FROM READINGS WHERE id=?", params["id"])
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -141,7 +145,7 @@ func deleteReading(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func updateReading(w http.ResponseWriter, req *http.Request) {
+func(dbHandler *dbHandler) updateReading(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	if params["id"] == "" {
 		log.Println("No ID")
@@ -158,7 +162,7 @@ func updateReading(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	sensVal.Time = getTime()
-	_, err = db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.Time, params["id"])
+	_, err = dbHandler.db.Exec("UPDATE READINGS SET Temperature = ?, Humidity = ?, CO2 = ?, Time = ? where id = ?", sensVal.Temperature, sensVal.Humidity, sensVal.Co2, sensVal.Time, params["id"])
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -185,13 +189,14 @@ func AccessControl(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
-
+	DBconn := dbConn()
+	defer DBconn.db.Close()
 	router := mux.NewRouter()
-	router.HandleFunc("/getReadings", AccessControl(getReadings))
-	router.HandleFunc("/getReading/{id}", AccessControl(getReading))
-	router.HandleFunc("/postReading", AccessControl(postReading))
-	router.HandleFunc("/deleteReading/{id}", AccessControl(deleteReading))
-	router.HandleFunc("/updateReading/{id}", AccessControl(updateReading))
+	router.HandleFunc("/getReadings", AccessControl(DBconn.getReadings))
+	router.HandleFunc("/getReading/{id}", AccessControl(DBconn.getReading))
+	router.HandleFunc("/postReading", AccessControl(DBconn.postReading))
+	router.HandleFunc("/deleteReading/{id}", AccessControl(DBconn.deleteReading))
+	router.HandleFunc("/updateReading/{id}", AccessControl(DBconn.updateReading))
 	log.Println("Server started...")
 	http.ListenAndServe(":8090", router)
 
