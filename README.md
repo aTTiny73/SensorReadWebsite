@@ -15,7 +15,7 @@ CREATE DATABASE SENSORDATA;
 USE SENSORDATA;
 CREATE TABLE READINGS
 (
-    ID varchar(255) NOT NULL,
+    ID int NOT NULL,
     Temperature varchar(255) NOT NULL,
     Humidity varchar(255) NOT NULL,
     CO2 varchar(255) NOT NULL,
